@@ -1,0 +1,247 @@
+﻿@model Project_Consume_Api.Models.LoginModel
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+    @* <style>
+
+    .main-container{
+        width:100vh;
+        display:flex;
+        justify-content:center;
+    }
+       
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+            .form-container h2 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                color: #555;
+            }
+
+            .form-group .radio-group {
+                display: flex;
+                justify-content: space-between;
+            }
+
+                .form-group .radio-group label {
+                    margin: 0;
+                }
+
+            .form-group input[type="radio"] {
+                margin-right: 5px;
+            }
+
+            .form-group button {
+                width: 100%;
+                padding: 10px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+                .form-group button:hover {
+                    background-color: #45a049;
+                }
+    </style>
+   
+   <div class="main-container">
+    <div class="form-container">
+        <h2>Login</h2>
+        <form asp-action="Login" method="POST">
+            <div class="form-group">
+                <label asp-for="EmailID">Username</label>
+                <input asp-for="EmailID" placeholder=" Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" placeholder="Enter your password" required>
+            </div>
+            <div class="form-group">
+                <label>Login as:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" asp-for="Role" value="Teacher" required> Teacher
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="Role" value="Student" required>
+                        Student
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+
+
+
+   </div> *@
+@{
+    ViewData["Title"] = "Student Login";
+}
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #2e8b57);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100vh;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .main-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+   
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus {
+            border-color: #4CAF50;
+        }
+
+        .radio-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .radio-group label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+
+        .form-group a {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #4CAF50;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .form-group a:hover {
+            color: #2e8b57;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h2>Login</h2>
+        @* Display an alert box for error message *@
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <script>
+                alert("@ViewBag.ErrorMessage");
+            </script>
+        }
+        <form asp-action="Login" method="POST">
+            <div class="form-group">
+                <label asp-for="EmailID">Username</label>
+                <input asp-for="EmailID" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" type="password" placeholder="Enter your password" required>
+            </div>
+            <div class="form-group">
+                <label>Login as:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" asp-for="Role" value="Teacher" required> Teacher
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="Role" value="Student" required> Student
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit">Login</button>
+                
+            </div>
+        </form>
+    </div>
+</body>
+</html>

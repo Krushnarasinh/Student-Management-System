@@ -1,0 +1,36 @@
+﻿@using Project_Consume_Api.Areas.Student.Models
+@model StudentModel
+
+<h2>Add/Edit Student</h2>
+<form method="post" asp-action="Save">
+    <input asp-for="StudentID" type="hidden" />
+
+    <label>Student Name</label>
+    <input asp-for="StudentName" />
+
+    <label>DOB</label>
+    <input asp-for="DOB" type="date" />
+
+    <label>Gender</label>
+    <input asp-for="Gender" />
+
+    <label>Contact Info</label>
+    <input asp-for="ContactInfo" />
+
+    <label>Roll No</label>
+    <input asp-for="RollNo" />
+
+    <label>Email ID</label>
+    <input asp-for="EmailID" />
+
+    <label>Password</label>
+    <input asp-for="Password" />
+
+    <label>Class ID</label>
+    <input asp-for="ClassID" />
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-controller="Student" asp-action="StudentList" class="btn btn-danger me-2">
+        Cancel
+    </a>
+</form>

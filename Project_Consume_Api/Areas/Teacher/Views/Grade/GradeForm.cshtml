@@ -1,0 +1,36 @@
+﻿@model Project_Consume_Api.Areas.Teacher.Models.GradeModel
+
+<h2>Add/Edit Grade</h2>
+
+<form method="post" asp-action="Save">
+    <input asp-for="GradeID" type="hidden" />
+
+    <div class="mb-3">
+        <label asp-for="StudentID" class="form-label">Student ID</label>
+        <input asp-for="StudentID" class="form-control" />
+        <span asp-validation-for="StudentID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SubjectID" class="form-label">Subject ID</label>
+        <input asp-for="SubjectID" class="form-control" />
+        <span asp-validation-for="SubjectID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Score" class="form-label">Score</label>
+        <input asp-for="Score" class="form-control" />
+        <span asp-validation-for="Score" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TeacherID" class="form-label">Teacher ID</label>
+        <input asp-for="TeacherID" class="form-control" />
+        <span asp-validation-for="TeacherID" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-controller="Grade" asp-action="GradeList" class="btn btn-danger me-2">
+        Cancel
+    </a>
+</form>

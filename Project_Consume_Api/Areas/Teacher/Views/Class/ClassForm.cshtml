@@ -1,0 +1,18 @@
+﻿@model Project_Consume_Api.Models.ClassModel
+
+<h2>Add/Edit Class</h2>
+
+<form method="post" asp-action="Save">
+    <input asp-for="ClassID" type="hidden" />
+
+    <div class="mb-3">
+        <label asp-for="ClassName" class="form-label">Class Name</label>
+        <input asp-for="ClassName" class="form-control" />
+        <span asp-validation-for="ClassName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-controller="Class" asp-action="ClassList" class="btn btn-danger me-2">
+        Cancel
+    </a>
+</form>

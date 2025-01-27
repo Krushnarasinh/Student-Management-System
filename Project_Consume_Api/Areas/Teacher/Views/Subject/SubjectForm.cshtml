@@ -1,0 +1,14 @@
+﻿@model SubjectModel
+
+<h2>Add/Edit Class</h2>
+<form method="post" asp-action="Save">
+    <input asp-for="SubjectID" type="hidden" />
+
+    <label>Subject Name</label>
+    <input asp-for="SubjectName" />
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-controller="Subject" asp-action="SubjectList" class="btn btn-danger me-2">
+        Cancel
+    </a>
+</form>

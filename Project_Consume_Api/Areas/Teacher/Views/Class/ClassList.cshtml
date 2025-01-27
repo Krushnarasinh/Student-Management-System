@@ -1,0 +1,36 @@
+﻿@using Project_Consume_Api.Models
+@model IEnumerable<ClassModel>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-primary fw-bold mb-0">Class List</h1>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a asp-controller="Class" asp-action="ClassForm" class="btn btn-primary me-2">
+            <i class="bi bi-plus-lg me-1"></i> Add Class
+        </a>
+    </div>
+</div>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Class Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model)
+        {
+            <tr>
+                <td>@i.ClassName</td>
+                <td class="text-center">
+                    <a class="btn btn-outline-success btn-xs" asp-controller="Class" asp-action="ClassForm" asp-route-ClassID="@i.ClassID">
+                        <i class="bi bi-pencil-fill">Edit</i>
+                    </a>
+                    <a class="btn btn-outline-danger btn-xs" asp-controller="Class" asp-action="Delete" asp-route-ClassID="@i.ClassID" onclick="return confirm('Are you sure you want to delete this class?');">
+                        <i class="bi bi-trash-fill">Delete</i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

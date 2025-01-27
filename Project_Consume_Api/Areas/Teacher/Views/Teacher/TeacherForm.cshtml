@@ -1,0 +1,26 @@
+﻿@model TeacherModel
+
+<h2>Add/Edit Teacher</h2>
+<form method="post" asp-action="Save">
+    <input asp-for="TeacherID" type="hidden" />
+
+    <label>Teacher Name</label>
+    <input asp-for="TeacherName" />
+
+    <label>ContactInfo</label>
+    <input asp-for="ContactInfo" />
+
+    <label>EmailID</label>
+    <input asp-for="EmailID" />
+
+    <label>Password</label>
+    <input asp-for="Password" />
+
+    <label>ClassID</label>
+    <input asp-for="ClassID" />
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-controller="Teacher" asp-action="TeacherList" class="btn btn-danger me-2">
+        Cancel
+    </a>
+</form>

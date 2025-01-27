@@ -1,0 +1,31 @@
+﻿
+@model Project_Consume_Api.Areas.Teacher.Models.TeacherSubjectModel
+
+<h2>Add/Edit Teacher Subject</h2>
+
+<form method="post" asp-action="Save">
+    <input asp-for="TeacherSubjectID" type="hidden" />
+
+    <div class="mb-3">
+        <label asp-for="TeacherSubjectName" class="form-label">Teacher Subject Name</label>
+        <input asp-for="TeacherSubjectName" class="form-control" />
+        <span asp-validation-for="TeacherSubjectName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SubjectID" class="form-label">Subject ID</label>
+        <input asp-for="SubjectID" class="form-control" />
+        <span asp-validation-for="SubjectID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TeacherID" class="form-label">Teacher ID</label>
+        <input asp-for="TeacherID" class="form-control" />
+        <span asp-validation-for="TeacherID" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-controller="TeacherSubject" asp-action="TeacherSubjectList" class="btn btn-danger me-2">
+        Cancel
+    </a>
+</form>
