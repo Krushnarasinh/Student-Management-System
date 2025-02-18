@@ -1,14 +1,123 @@
 ﻿@model SubjectModel
 
-<h2>Add/Edit Class</h2>
-<form method="post" asp-action="Save">
-    <input asp-for="SubjectID" type="hidden" />
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+    }
 
-    <label>Subject Name</label>
-    <input asp-for="SubjectName" />
+    section {
+        width: 100vw;
+    }
 
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-controller="Subject" asp-action="SubjectList" class="btn btn-danger me-2">
-        Cancel
-    </a>
-</form>
+    .container-fluid {
+        width: 100%;
+        max-width: 100%;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 1200px; /* Increased max-width for better layout */
+        margin: auto;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        background: #fff;
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .form-group {
+        width: 100%;
+        max-width: 600px; /* Limits form width for readability */
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+        border-color: #4CAF50;
+    }
+
+    .form-group button {
+        width: 100%;
+        padding: 12px;
+        background-color: #404040;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .form-group button:hover {
+        background-color: #2e8b57;
+    }
+
+
+        .form-group {
+            max-width: 100%;
+        }
+    }
+</style>
+
+<h2 class="text-primary fw-bold text-center">Add/Edit Subject</h2>
+
+<section>
+    <div class="container-fluid">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form method="post" asp-action="Save">
+                    <input type="hidden" asp-for="SubjectID" />
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="SubjectName" class="form-label"></label>
+                        <input asp-for="SubjectName" class="form-control" />
+                        <span asp-validation-for="SubjectName" class="text-danger"></span>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        <a href="javascript:history.back()" class="btn btn-dark btn-sm">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

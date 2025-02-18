@@ -1,0 +1,44 @@
+﻿@model Project_Consume_Api.Areas.Teacher.Models.TeacherModel
+
+@{
+    ViewData["Title"] = "Teacher Profile";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center text-primary">Teacher Profile</h2>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-4 text-center">
+               
+                <h4 class="mt-3">@Model.TeacherName</h4>
+                <p class="text-muted">Teacher ID: @Model.TeacherID</p>
+            </div>
+
+            <div class="col-md-8">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Teacher Name</th>
+                            <td>@Model.TeacherName</td>
+                        </tr>
+                        <tr>
+                            <th>Contact Info</th>
+                            <td>@Model.ContactInfo</td>
+                        </tr>
+                        <tr>
+                            <th>Email ID</th>
+                            <td>@Model.EmailID</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="text-center mt-4">
+                    <a href="@Url.Action("TeacherList", "Teacher")" class="btn btn-secondary">Back to List</a>
+                    <a href="@Url.Action("TeacherForm", "Teacher", new { TeacherID = Model.TeacherID })" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

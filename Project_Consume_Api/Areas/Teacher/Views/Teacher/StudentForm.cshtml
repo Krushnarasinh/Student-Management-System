@@ -1,0 +1,165 @@
+﻿@using Project_Consume_Api.Areas.Student.Models
+@model StudentModel
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+    }
+
+    section {
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container-fluid {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 1200px; /* Ensures proper width */
+        margin: auto;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        background: #fff;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                border-color: #4CAF50;
+            }
+
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            background-color: #404040;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+            .form-group button:hover {
+                background-color: #2e8b57;
+            }
+
+</style>
+
+<section>
+    <div class="container-fluid">
+        <h1 class="text-primary fw-bold text-center">Student Registration</h1>
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form method="post" asp-action="StudentForm">
+                    <input type="hidden" asp-for="StudentID" />
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="StudentName"></label>
+                        <input asp-for="StudentName" class="form-control" />
+                        <span asp-validation-for="StudentName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="DOB"></label>
+                        <input asp-for="DOB" type="date" class="form-control" />
+                        <span asp-validation-for="DOB" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="Gender"></label>
+                        <select asp-for="Gender" class="form-select">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="ContactInfo"></label>
+                        <input asp-for="ContactInfo" type="tel" class="form-control" />
+                        <span asp-validation-for="ContactInfo" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="RollNo"></label>
+                        <input asp-for="RollNo" class="form-control" />
+                        <span asp-validation-for="RollNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="EmailID"></label>
+                        <input asp-for="EmailID" type="email" class="form-control" />
+                        <span asp-validation-for="EmailID" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="ClassID"></label>
+                        <select asp-for="ClassID" class="form-select" asp-items="@(new SelectList(ViewBag.ClassList, "ClassID", "ClassName"))">
+                            <option value="">Select Class</option>
+                        </select>
+                        <span asp-validation-for="ClassID" class="text-danger"></span>
+                    </div>
+
+                    <div class="">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        <a href="javascript:history.back()" class="btn btn-dark btn-sm">Back</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,47 +1,102 @@
-﻿@using Project_Consume_Api.Areas.Teacher.Models
-@model IEnumerable<GradeModel>
+﻿@model IEnumerable<GradeModel>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center pt-2">
     <h1 class="text-primary fw-bold mb-0">Grade List</h1>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <a asp-controller="Grade" asp-action="GradeForm" class="btn btn-primary me-2">
+        <a asp-controller="Grade" asp-action="AddGrade" class="btn btn-primary me-2">
             <i class="bi bi-plus-lg me-1"></i> Add Grade
         </a>
     </div>
 </div>
 
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>Grade ID</th>
-            <th>Student ID</th>
-            <th>Subject ID</th>
-            <th>Score</th>
-            <th>Teacher ID</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-        
-            @foreach (var grade in Model)
-            {
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-striped table-bordered table-hover table-responsive">
+            <thead>
                 <tr>
-                    <td>@grade.GradeID</td>
-                    <td>@grade.StudentID</td>
-                    <td>@grade.SubjectID</td>
-                    <td>@grade.Score</td>
-                    <td>@grade.TeacherID</td>
-                    <td class="text-center">
-                        <a class="btn btn-outline-success btn-xs" asp-controller="Grade" asp-action="GradeForm" asp-route-GradeID="@grade.GradeID">
-                            <i class="bi bi-pencil-fill">Edit</i>
-                        </a>
-                        <a class="btn btn-outline-danger btn-xs" asp-controller="Grade" asp-action="Delete" asp-route-GradeID="@grade.GradeID" onclick="return confirm('Are you sure you want to delete this grade?');">
-                            <i class="bi bi-trash-fill">Delete</i>
-                        </a>
-                    </td>
+                    <th class="px-2 py-1 font-weight-bold">Score</th>
+                    <th class="px-2 py-1 font-weight-bold">Teacher Name</th>
+                    <th class="px-2 py-1 font-weight-bold">Student Name</th>
+                    <th class="px-2 py-1 font-weight-bold">Subject Name</th>
+                    <th class="text-center px-2 py-1 font-weight-bold">Actions</th>
                 </tr>
-            }
-        
-    </tbody>
-</table>
+            </thead>
+            <tbody>
+                @foreach (var grade in Model)
+                {
+                    <tr>
+                        <td>@grade.Score</td>
+                        <td>@grade.TeacherName</td>
+                        <td>@grade.StudentName</td>
+                        <td>@grade.SubjectName</td>
+                        <td class="text-center">
+                            <a class="btn btn-outline-success btn-sm" asp-controller="Grade" asp-action="GradeForm" asp-route-GradeID="@grade.GradeID">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a class="btn btn-outline-danger btn-sm" asp-controller="Grade" asp-action="Delete" asp-route-GradeID="@grade.GradeID"
+                               onclick="return confirm('Are you sure you want to delete this grade?');">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Display SweetAlert for successful deletion
+        @if (TempData["GradeDeleted"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["GradeDeleted"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+            // Display SweetAlert for deletion failure (e.g., foreign key constraint)
+        @if (TempData["GradeNotDeleted"] != null)
+        {
+            <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '@TempData["GradeNotDeleted"]',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+            // Display SweetAlert for successful insertion
+        @if (TempData["GradeInsert"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["GradeInsert"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+            // Display SweetAlert for successful update
+        @if (TempData["GradeUpdated"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["GradeUpdated"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+    </script>
+}

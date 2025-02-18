@@ -1,6 +1,6 @@
-﻿@using Project_Consume_Api.Models
-@model IEnumerable<ClassModel>
+﻿@model IEnumerable<Project_Consume_Api.Models.ClassModel>
 
+@* Page Header *@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="text-primary fw-bold mb-0">Class List</h1>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -10,27 +10,134 @@
     </div>
 </div>
 
-<table class="table table-responsive">
-    <thead>
-        <tr>
-            <th>Class Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var i in Model)
+@* Search Input *@
+<div class="mb-3">
+    <div class="input-group shadow-sm" style="border-radius: 10px; overflow: hidden;">
+        <span class="input-group-text bg-primary text-white" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
+            <i class="bi bi-search"></i>
+        </span>
+        <input type="text" class="form-control form-control-lg bg-white" id="savingSearch"
+               placeholder="Search Classes" style="border-top-right-radius: 10px; border-bottom-right-radius: 10px;">
+    </div>
+</div>
+
+@* Class List Table *@
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-striped table-bordered table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th class="px-2 py-1 font-weight-bold">Class Name</th>
+                    <th class="text-center px-2 py-1 font-weight-bold">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="savingTable">
+                @foreach (var classItem in Model)
+                {
+                    <tr>
+                        <td>@classItem.ClassName</td>
+                        <td class="text-center">
+                            <a class="btn btn-outline-success btn-sm" asp-controller="Class" asp-action="ClassForm" asp-route-ClassID="@classItem.ClassID">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a class="btn btn-outline-danger btn-sm" asp-controller="Class" asp-action="Delete" asp-route-ClassID="@classItem.ClassID"
+                               onclick="return confirm('Are you sure you want to delete this class?');">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Include SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // Search functionality for filtering table rows
+            $("#savingSearch").on("keyup", function () {
+                var value = $(this).val().toLowerCase().trim();
+                $(".savingTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+
+            // Delete confirmation with SweetAlert
+            $(".delete-class").click(function (e) {
+                e.preventDefault();
+                var classId = $(this).data("id");
+                var row = $(this).closest("tr");
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Class/Delete?ClassID=' + classId;
+                    }
+                });
+            });
+
+            // Display SweetAlert for success/failure messages
+        @if (TempData["ClassDeleted"] != null)
         {
-            <tr>
-                <td>@i.ClassName</td>
-                <td class="text-center">
-                    <a class="btn btn-outline-success btn-xs" asp-controller="Class" asp-action="ClassForm" asp-route-ClassID="@i.ClassID">
-                        <i class="bi bi-pencil-fill">Edit</i>
-                    </a>
-                    <a class="btn btn-outline-danger btn-xs" asp-controller="Class" asp-action="Delete" asp-route-ClassID="@i.ClassID" onclick="return confirm('Are you sure you want to delete this class?');">
-                        <i class="bi bi-trash-fill">Delete</i>
-                    </a>
-                </td>
-            </tr>
+            <text>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@TempData["ClassDeleted"]',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
         }
-    </tbody>
-</table>
+
+        @if (TempData["ClassNotDeleted"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '@TempData["ClassNotDeleted"]',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+
+        @if (TempData["ClassInsert"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@TempData["ClassInsert"]',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+
+        @if (TempData["ClassUpdated"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@TempData["ClassUpdated"]',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+                });
+    </script>
+}

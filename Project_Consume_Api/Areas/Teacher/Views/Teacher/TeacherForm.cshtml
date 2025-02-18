@@ -1,26 +1,139 @@
 ﻿@model TeacherModel
 
-<h2>Add/Edit Teacher</h2>
-<form method="post" asp-action="Save">
-    <input asp-for="TeacherID" type="hidden" />
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+    }
 
-    <label>Teacher Name</label>
-    <input asp-for="TeacherName" />
+    section {
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
 
-    <label>ContactInfo</label>
-    <input asp-for="ContactInfo" />
+    .container-fluid {
+        width: 100%;
+        max-width: 100%;
+        padding: 0; /* Fix spacing */
+    }
 
-    <label>EmailID</label>
-    <input asp-for="EmailID" />
+    .card {
+        width: 100%;
+        max-width: 1200px; /* Adjust max width for large screens */
+        margin: auto;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        background: #fff;
+    }
 
-    <label>Password</label>
-    <input asp-for="Password" />
+    .form-group {
+        width: 100%;
+    }
 
-    <label>ClassID</label>
-    <input asp-for="ClassID" />
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
 
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-controller="Teacher" asp-action="TeacherList" class="btn btn-danger me-2">
-        Cancel
-    </a>
-</form>
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                border-color: #4CAF50;
+            }
+
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            background-color: #404040;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+            .form-group button:hover {
+                background-color: #2e8b57;
+            }
+
+</style>
+
+<section>
+    <div class="container-fluid">
+        <h1 class="text-primary fw-bold text-center">Add/Edit Teacher</h1>
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form method="post" asp-action="Save" asp-controller="Teacher">
+                    <input type="hidden" asp-for="TeacherID" />
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="TeacherName"></label>
+                        <input asp-for="TeacherName" class="form-control" />
+                        <span asp-validation-for="TeacherName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="ContactInfo"></label>
+                        <input asp-for="ContactInfo" class="form-control" />
+                        <span asp-validation-for="ContactInfo" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="EmailID"></label>
+                        <input asp-for="EmailID" class="form-control" />
+                        <span asp-validation-for="EmailID" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="ClassID"></label>
+                        <select asp-for="ClassID" class="form-select" asp-items="@(new SelectList(ViewBag.ClassList, "ClassID", "ClassName"))">
+                            <option value="">Select Class</option>
+                        </select>
+                        <span asp-validation-for="ClassID" class="text-danger"></span>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        <a href="javascript:history.back()" class="btn btn-dark btn-sm">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

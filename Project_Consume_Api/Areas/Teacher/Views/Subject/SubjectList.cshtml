@@ -4,29 +4,121 @@
     <h1 class="text-primary fw-bold mb-0">Subject List</h1>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <a asp-controller="Subject" asp-action="SubjectForm" class="btn btn-primary me-2">
-            <i class="bi bi-plus-lg me-1"></i> Add Class
+            <i class="bi bi-plus-lg me-1"></i> Add Subject
         </a>
     </div>
 </div>
 
-<table class="table table-responsive">
-    <tr>
-        <th>SubjectName</th>
-        <th>Actions</th>
-    </tr>
+<div class="mb-3">
+    <div class="input-group shadow-sm" style="border-radius: 10px; overflow: hidden;">
+        <span class="input-group-text bg-primary text-white" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
+            <i class="bi bi-search"></i>
+        </span>
+        <input type="text" class="form-control form-control-lg bg-white" id="savingSearch"
+               placeholder="Search Subjects" style="border-top-right-radius: 10px; border-bottom-right-radius: 10px;">
+    </div>
+</div>
 
-    @foreach (var subject in Model)
-    {
-        <tr>
-            <td>@subject.SubjectName</td>
-            <td class="text-center">
-                <a class="btn btn-outline-success btn-xs" asp-controller="Subject" asp-action="SubjectForm" asp-route-SubjectID="@subject.SubjectID">
-                    <i class="bi bi-pencil-fill">Edit</i>
-                </a>
-                <a class="btn btn-outline-danger btn-xs" asp-controller="Subject" asp-action="Delete" asp-route-SubjectID="@subject.SubjectID" onclick="return confirm('Are you sure you want to delete this Country?');">
-                    <i class="bi bi-trash-fill">Delete</i>
-                </a>
-            </td>
-        </tr>
-    }
-</table>
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-striped table-bordered table-hover table-responsive">
+            <thead class="table- text-center">
+                <tr>
+                    <th>Subject Name</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="savingTable">
+                @foreach (var subject in Model)
+                {
+                    <tr>
+                        <td>@subject.SubjectName</td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-outline-success" asp-controller="Subject" asp-action="SubjectForm" asp-route-SubjectID="@subject.SubjectID">
+                                <i class="bi bi-pencil-fill"></i> Edit
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger" asp-controller="Subject" asp-action="Delete" asp-route-SubjectID="@subject.SubjectID"
+                               onclick="return confirm('Are you sure you want to delete this subject?');">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Display SweetAlert for successful deletion
+        @if (TempData["SubjectDeleted"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@TempData["SubjectDeleted"]',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+
+                // Display SweetAlert for deletion failure (e.g., foreign key constraint)
+        @if (TempData["SubjectNotDeleted"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '@TempData["SubjectNotDeleted"]',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+
+                // Display SweetAlert for successful insertion
+        @if (TempData["SubjectInsert"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@TempData["SubjectInsert"]',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+
+                // Display SweetAlert for successful update
+        @if (TempData["SubjectUpdated"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@TempData["SubjectUpdated"]',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+                });
+    </script>
+    <!-- Include jQuery if not already included -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Search functionality for filtering table rows
+            $("#savingSearch").on("keyup", function () {
+                var value = $(this).val().toLowerCase().trim(); // Get search input
+                $("#savingTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1); // Toggle rows based on match
+                });
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,141 @@
+﻿@model List<AttendanceModel>
+
+@{
+    bool isAdd = Convert.ToBoolean(Context.Request.Query["isAdd"]);
+    DateTime datetime = DateTime.TryParse(Context.Request.Query["date"], out DateTime date) ? date : DateTime.Now;
+}
+
+<div class="d-flex justify-content-between align-items-center pt-2">
+    <h1 class="text-primary fw-bold mb-0">Attendance List</h1>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+       
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <form id="attendanceForm" method="post" asp-controller="Attendance" asp-action="FillOrEditAttendance" asp-route-isAdd="@isAdd" asp-route-datetime="@datetime">
+            <table class="table table-striped table-bordered table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <th class="px-2 py-1 font-weight-bold">Status</th>
+                        <th class="px-2 py-1 font-weight-bold">Teacher ID</th>
+                        <th class="px-2 py-1 font-weight-bold">Student ID</th>
+                        <th class="px-2 py-1 font-weight-bold">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count(); i++)
+                    {
+
+                        <tr class="@((Model[i].Status == "Absent") ? "bg-danger text-white" : "")">
+                            <input type="hidden" name="[@i].ClassID" value="@Model[i].ClassID" />
+                            <input type="hidden" name="[@i].AttendanceID" value="@Model[i].AttendanceID" />
+                            <td>
+                                <input type="checkbox" class="attendance-checkbox"
+                                       name="[@i].Status"
+                                       value="Present"
+                                @(Model[i].Status == "Present" ? "checked" : "") />
+                                <label class="form-check-label ms-2">
+                                    @(Model[i].Status == "Present" ? "Present" : "Absent")
+                                </label>
+                            </td>
+                            <td>
+                                <input type="hidden" name="[@i].TeacherID" value="@Model[i].TeacherID" />
+                                @Model[i].TeacherID
+                            </td>
+                            <td>
+                                <input type="hidden" name="[@i].StudentID" value="@Model[i].StudentID" />
+                                @Model[i].RollNo
+                            </td>
+                            <td>
+                                <input type="hidden" name="[@i].Date" value="@Convert.ToDateTime(Model[i].Date).ToString("yyyy-MM-dd")" />
+                                 @Convert.ToDateTime(Model[i].Date).ToString("yyyy-MM-dd")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button type="submit" class="btn btn-primary">@(isAdd ? "Submit" : "Edit")</button>
+            </div>
+        </form>
+    </div>
+</div>
+<style>
+    /* Light red background for absent rows */
+    .absent-row {
+        background-color: #f8d7da !important; /* Light red */
+        color: #721c24 !important; /* Dark red text for contrast */
+        transition: background-color 0.3s ease-in-out;
+    }
+</style>
+
+
+@section Scripts {
+    <script>
+        // Handle row styling based on initial checkbox state
+        document.querySelectorAll('.attendance-checkbox').forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            row.classList.toggle('absent-row', !checkbox.checked);
+            row.classList.toggle('text-white', !checkbox.checked);
+
+            checkbox.addEventListener('change', function () {
+                row.classList.toggle('absent-row', !this.checked);
+                row.classList.toggle('text-white', !this.checked);
+                const label = this.nextElementSibling;
+                label.textContent = this.checked ? 'Present' : 'Absent';
+            });
+        });
+
+        // Display SweetAlert notifications for server-side TempData messages
+        @if (TempData["AttendanceDeleted"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["AttendanceDeleted"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+        @if (TempData["AttendanceNotDeleted"] != null)
+        {
+            <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '@TempData["AttendanceNotDeleted"]',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+        @if (TempData["AttendanceInsert"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["AttendanceInsert"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+        @if (TempData["AttendanceUpdated"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["AttendanceUpdated"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+    </script>
+}

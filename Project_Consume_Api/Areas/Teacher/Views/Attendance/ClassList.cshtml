@@ -1,0 +1,65 @@
+﻿@{
+    string dateString = Context.Request.Query["date"];
+    DateTime currentDate = DateTime.TryParse(dateString, out DateTime date) ? date : DateTime.Now;
+    if (ViewBag.SelectedDate != null)
+    {
+        currentDate = ViewBag.SelectedDate; // Set date from ViewBag if available
+    }
+
+    DateTime previousDate = currentDate.AddDays(-1);
+    DateTime nextDate = currentDate.AddDays(1);
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-primary fw-bold mb-0">Class List</h1>
+</div>
+
+
+<div class="card shadow">
+    <!-- Date Navigation Buttons -->
+    <div class="d-flex justify-content-between p-3">
+        <a asp-controller="Attendance" asp-action="ClassList" asp-route-date="@previousDate.ToString("yyyy-MM-dd")" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Previous
+        </a>
+
+        <h4 class="fw-bold text-center">@currentDate.ToString("yyyy-MM-dd")</h4>
+
+        <a asp-controller="Attendance" asp-action="ClassList" asp-route-date="@nextDate.ToString("yyyy-MM-dd")" class="btn btn-outline-primary">
+            Next <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-striped table-bordered table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th class="px-2 py-1 font-weight-bold">Class Name</th>
+                    <th class="text-center px-2 py-1 font-weight-bold">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var classItem in Model)
+                {
+                    <tr>
+                        <td>@classItem.ClassName</td>
+                        <td class="text-center">
+                            @if (classItem.IsFieldAttendance)
+                            {
+                                <a class="btn btn-outline-success btn-sm" asp-controller="Attendance" asp-action="FillOrEditAttendance"
+                                   asp-route-ClassID="@classItem.ClassID" asp-route-date="@currentDate.ToString("yyyy-MM-dd")" asp-route-isAdd="false">
+                                    <i class="bi bi-pencil-fill"></i> Edit
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-danger btn-sm" asp-controller="Attendance" asp-action="FillOrEditAttendance"
+                                   asp-route-ClassID="@classItem.ClassID" asp-route-date="@currentDate.ToString("yyyy-MM-dd")" asp-route-isAdd="true">
+                                    <i class="bi bi-pencil-fill"></i> Fill
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

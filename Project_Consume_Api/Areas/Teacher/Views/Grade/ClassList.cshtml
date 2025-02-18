@@ -1,0 +1,104 @@
+﻿@model IEnumerable<GradeClassListModel>
+
+@{
+    int subjectID = Convert.ToInt32(Context.Request.Query["SubjectID"]);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-primary fw-bold mb-0">Class List</h1>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-striped table-bordered table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th class="px-2 py-1 font-weight-bold">Class Name</th>
+                    <th class="text-center px-2 py-1 font-weight-bold">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var classItem in Model)
+                {
+                    <tr>
+                        <td>@classItem.ClassName</td>
+                        <td class="text-center">
+                            @if (!classItem.IsFieldGrade)
+                            {
+                                <a class="btn btn-outline-success btn-sm" asp-controller="Grade" asp-action="FillOrEditGrade" asp-route-ClassID="@classItem.ClassID" asp-route-subjectID="@subjectID" asp-route-isAdd="true">
+                                    <i class="bi bi-pencil-fill"></i> Fill
+                                </a>
+                            }
+                            else
+
+                            {
+                                <a class="btn btn-outline-danger btn-sm" asp-controller="Grade" asp-action="FillOrEditGrade" asp-route-ClassID="@classItem.ClassID" asp-route-subjectID="@subjectID" asp-route-isAdd="false">
+                                    <i class="bi bi-pencil-fill"></i> Edit
+                                </a>
+                            }
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        // Display SweetAlert for successful deletion
+        @if (TempData["ClassDeleted"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["ClassDeleted"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+            // Display SweetAlert for deletion failure (e.g., foreign key constraint)
+        @if (TempData["ClassNotDeleted"] != null)
+        {
+            <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '@TempData["ClassNotDeleted"]',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+            // Display SweetAlert for successful insertion
+        @if (TempData["ClassInsert"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["ClassInsert"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+            // Display SweetAlert for successful update
+        @if (TempData["ClassUpdated"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["ClassUpdated"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+    </script>
+}

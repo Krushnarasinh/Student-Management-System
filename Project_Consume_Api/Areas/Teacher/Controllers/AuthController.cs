@@ -83,16 +83,19 @@ namespace Project_Consume_Api.Areas.Teacher.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         var data = await response.Content.ReadAsStringAsync();
-                        var student = JsonConvert.DeserializeObject<StudentModel>(data);
+                        StudentLogInModel studentLogIn = JsonConvert.DeserializeObject<StudentLogInModel>(data.ToString());
 
-                        if (student != null && !string.IsNullOrEmpty(student.EmailID))
-                        {
-                            _HttpContextAccessor.HttpContext.Session.SetString("StudentID", student.StudentID.ToString());
-                            _HttpContextAccessor.HttpContext.Session.SetString("EmailAddress", student.EmailID);
-                            return RedirectToAction("StudentHome", "Student", new { area = "Student" });
+                        StudentModel student = studentLogIn.student;
+                        string token = studentLogIn.token;
+
+                        _HttpContextAccessor.HttpContext.Session.SetString("StudentID", student.StudentID.ToString());
+                        _HttpContextAccessor.HttpContext.Session.SetString("EmailAddress", student.EmailID.ToString());
+
+                        CommonVariable.SetToken(token);
+                        return RedirectToAction("Index1", "StudentDashBoard", new { area = "Student" });
                         }
                     }
-                }
+                
                 else if (logIn.Role == "Teacher")
                 {
                     var json = JsonConvert.SerializeObject(logIn);
@@ -102,16 +105,18 @@ namespace Project_Consume_Api.Areas.Teacher.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         var data = await response.Content.ReadAsStringAsync();
-                        var teacher = JsonConvert.DeserializeObject<TeacherModel>(data);
+                        TeacherLoginResponse teacherLogin = JsonConvert.DeserializeObject<TeacherLoginResponse>(data.ToString());
 
-                        if (teacher != null && !string.IsNullOrEmpty(teacher.EmailID))
-                        {
-                            _HttpContextAccessor.HttpContext.Session.SetString("TeacherID", teacher.TeacherID.ToString());
-                            _HttpContextAccessor.HttpContext.Session.SetString("EmailAddress", teacher.EmailID);
-                            return RedirectToAction("ClassList", "Class");
+                        TeacherModel teacher = teacherLogin.Teacher;
+
+                        _HttpContextAccessor.HttpContext.Session.SetString("TeacherID", teacher.TeacherID.ToString());
+                        _HttpContextAccessor.HttpContext.Session.SetString("EmailAddress", teacher.EmailID.ToString());
+
+                        CommonVariable.SetToken(teacherLogin.Token);
+                        return RedirectToAction("Index", "TeacherDashBoard");
                         }
                     }
-                }
+                
 
                 // Set an error message if login fails
                 ViewBag.ErrorMessage = "Invalid login credentials. Please try again.";

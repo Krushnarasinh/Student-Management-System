@@ -1,41 +1,57 @@
-﻿@* @model Project_Consume_Api.Models.AttendanceModel *@
-@model Project_Consume_Api.Areas.Teacher.Models.AttendanceModel
+﻿@model AttendanceModel
 
-<h2>Add/Edit Attendance</h2>
+<section class="section">
+    <div class="row">
+        <div class="col-lg">
+            <div class="card m-5">
+                <div class="card-body pt-6">
+                    <div class="row my-3">
+                        <div class="col">
+                            <form>
+                                <input type="button" value="Go back!" onclick="history.back()">
+                            </form>
+                        </div>
+                        <div class="col-10 text-center fs-6 fw-bold">Add/Edit Attendance</div>
+                    </div>
+                    <form method="post" asp-action="Save" asp-controller="Attendance">
+                        <input type="hidden" asp-for="AttendanceID" />
 
-<form method="post" asp-action="Save">
-    <input asp-for="AttendanceID" type="hidden" />
+                        <div class="row mb-3 mt-3">
+                            <label for="Status" class="col-sm-2 col-form-label">Status</label>
+                            <div class="col-sm-10">
+                                <input asp-for="Status" type="text" class="form-control" id="Status" />
+                            </div>
+                        </div>
 
-    <div class="mb-3">
-        <label asp-for="Status" class="form-label">Status</label>
-        <select asp-for="Status" class="form-control">
-            <option value="Present">Present</option>
-            <option value="Absent">Absent</option>
-            <option value="Late">Late</option>
-        </select>
-        <span asp-validation-for="Status" class="text-danger"></span>
+                        <div class="row mb-3">
+                            <label for="TeacherID" class="col-sm-2 col-form-label">Teacher ID</label>
+                            <div class="col-sm-10">
+                                <input asp-for="TeacherID" type="text" class="form-control" id="TeacherID" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="StudentID" class="col-sm-2 col-form-label">Student ID</label>
+                            <div class="col-sm-10">
+                                <input asp-for="StudentID" type="text" class="form-control" id="StudentID" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="Date" class="col-sm-2 col-form-label">Date</label>
+                            <div class="col-sm-10">
+                                <input asp-for="Date" type="date" class="form-control" id="Date" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 text-center">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Submit Form</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="TeacherID" class="form-label">Teacher ID</label>
-        <input asp-for="TeacherID" class="form-control" />
-        <span asp-validation-for="TeacherID" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="StudentID" class="form-label">Student ID</label>
-        <input asp-for="StudentID" class="form-control" />
-        <span asp-validation-for="StudentID" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Date" class="form-label">Date</label>
-        <input asp-for="Date" class="form-control" type="date" />
-        <span asp-validation-for="Date" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-controller="Attendance" asp-action="AttendanceList" class="btn btn-danger me-2">
-        Cancel
-    </a>
-</form>
+</section>

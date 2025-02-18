@@ -1,100 +1,112 @@
-﻿using Project_Consume_Api.Areas.Student.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Project_Consume_Api.Areas.Student.Models;
+using Project_Consume_Api.Areas.Teacher.Models;
+using Project_Consume_Api.Models;
 using System.Text;
 
 namespace Project_Consume_Api.Areas.Student.Controllers
 {
-	[Area("Student")]
-	public class StudentController : Controller
-	{
-		Uri baseAddress = new Uri("http://localhost:21535/api");
-		private readonly HttpClient _client;
+    [Area("Student")]
+    public class StudentController : Controller
+    {
+        Uri baseAddress = new Uri("http://localhost:21535/api");
+        private readonly HttpClient _client;
 
-		public StudentController()
-		{
-			_client = new HttpClient();
-			_client.BaseAddress = baseAddress;
-		}
+        public StudentController()
+        {
+            _client = new HttpClient();
+            _client.BaseAddress = baseAddress;
+        }
 
-		public IActionResult StudentList()
-		{
-			List<StudentModel> students = new List<StudentModel>();
-			HttpResponseMessage response = _client.GetAsync($"{_client.BaseAddress}/Student").Result;
+        public async Task<IActionResult> StudentList()
+        {
+            List<StudentModel> students = new List<StudentModel>();
+            HttpResponseMessage response = await _client.GetAsync($"{_client.BaseAddress}/Student");
 
-			if (response.IsSuccessStatusCode)
-			{
-				string data = response.Content.ReadAsStringAsync().Result;
-				Console.WriteLine(data);
-				students = JsonConvert.DeserializeObject<List<StudentModel>>(data);
-			}
-			return View("StudentList", students);
-		}
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(data);
+                students = JsonConvert.DeserializeObject<List<StudentModel>>(data);
+            }
+            return View("StudentList", students);
+        }
 
-		public async Task<IActionResult> StudentForm(int? StudentID)
-		{
-			if (StudentID.HasValue)
-			{
-				var response = await _client.GetAsync($"api/Student/{StudentID}");
-				if (response.IsSuccessStatusCode)
-				{
-					var data = await response.Content.ReadAsStringAsync();
-					var student = JsonConvert.DeserializeObject<StudentModel>(data.ToString());
-					return View(student);
-				}
-			}
-			return View(new StudentModel());
-		}
+       
 
-		[HttpPost]
-		public async Task<IActionResult> Save(StudentModel student)
-		{
-			if (ModelState.IsValid)
-			{
-				var studentData = new	
-				{
-					studentID = student.StudentID,
-					studentName = student.StudentName,
-					dob = student.DOB,
-					gender = student.Gender,
-					contactInfo = student.ContactInfo,
-					rollNo = student.RollNo,
-					emailID = student.EmailID,
-					password = student.Password,
-					classID = student.ClassID
-				};
-				var json = JsonConvert.SerializeObject(studentData);
-				var content = new StringContent(json, Encoding.UTF8, "application/json");
-				HttpResponseMessage response;
+        public async Task<IActionResult> Delete(int StudentID)
+        {
+            var response = await _client.DeleteAsync($"api/Student/{StudentID}");
+            TempData["StudentDeleted"] = response.IsSuccessStatusCode ? "Student deleted successfully!" : "Foreign Key Error: Student deletion failed!";
+            return RedirectToAction("StudentList");
+        }
 
-				if (student.StudentID == 0 || student.StudentID == null)
-				{
-					response = await _client.PostAsync($"{_client.BaseAddress}/Student", content);
-				}
-				else
-				{
-					response = await _client.PutAsync($"{_client.BaseAddress}/Student/{student.StudentID}", content);
-				}
+        private async Task LoadClassList()
+        {
+            var response = await _client.GetAsync("api/Student/Classes");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var classes = JsonConvert.DeserializeObject<List<classdropdownmodel>>(data);
+                ViewBag.ClassList = classes;
+            }
+        }
 
-				if (response.IsSuccessStatusCode)
-				{
-					return RedirectToAction("StudentList");
-				}
-			}
-			return View("StudentForm", student);
-		}
+        public async Task<IActionResult> StudentHome()
+        {
+            string studentID = HttpContext.Session.GetString("StudentID");
 
-		public async Task<IActionResult> Delete(int StudentID)
-		{
-			var response = await _client.DeleteAsync($"api/Student/{StudentID}");
-			return RedirectToAction("StudentList");
-		}
+            if (studentID == null)
+            {
+                return Json(new { error = "No StudentID found in session" });
+            }
 
-		public IActionResult StudentHome()
-		{
-			return View();
-		}
+            var response = await _client.GetAsync($"api/Teacher/GetStudentDetails/{studentID}");
 
-	}
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+
+                return View();
+            }
+
+            return View();
+
+        }
+
+        public async Task<IActionResult> StudentAttendance()
+        {
+            HttpResponseMessage response = await _client.GetAsync($"{_client.BaseAddress}/Teacher/GetStudentAttendance/{CommonVariable.StudentID()}");
+
+            List<AttendanceModel> attendances = new List<AttendanceModel>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                attendances = JsonConvert.DeserializeObject<List<AttendanceModel>>(data);
+                return View(attendances);
+            }
+
+            TempData["Error"] = "Failed to fetch student attendance.";
+            return View(attendances);
+        }
+
+        public async Task<IActionResult> StudentGrades()
+        {
+            HttpResponseMessage response = await _client.GetAsync($"{_client.BaseAddress}/Teacher/GetStudentGrades/{CommonVariable.StudentID()}");
+            List<GradeModel> grades = new List<GradeModel>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                grades = JsonConvert.DeserializeObject<List<GradeModel>>(data);
+                return View(grades);
+            }
+
+            TempData["Error"] = "Failed to fetch student grades.";
+            return View(grades);
+        }
+
+    }
 }

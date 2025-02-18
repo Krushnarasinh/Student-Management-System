@@ -1,31 +1,116 @@
-﻿
-@model Project_Consume_Api.Areas.Teacher.Models.TeacherSubjectModel
+﻿@model TeacherSubjectModel
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-<h2>Add/Edit Teacher Subject</h2>
+    .main-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        text-align: center;
+    }
 
-<form method="post" asp-action="Save">
-    <input asp-for="TeacherSubjectID" type="hidden" />
+        .main-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
 
-    <div class="mb-3">
-        <label asp-for="TeacherSubjectName" class="form-label">Teacher Subject Name</label>
-        <input asp-for="TeacherSubjectName" class="form-control" />
-        <span asp-validation-for="TeacherSubjectName" class="text-danger"></span>
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-group input[type="text"]:focus,
+            .form-group select:focus {
+                border-color: #4CAF50;
+            }
+
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            background-color: #404040;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+            .form-group button:hover {
+                background-color: #2e8b57;
+            }
+</style>
+
+<section>
+    <div class="main-container">
+        <h2 class="text-primary fw-bold">Add/Edit Teacher Subject</h2>
+        <div class="card shadow-lg p-4">
+            <div class="card-body">
+                <form method="post" asp-action="Save" asp-controller="TeacherSubject">
+                    <input type="hidden" asp-for="TeacherSubjectID" />
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="TeacherSubjectName">Teacher Subject Name</label>
+                        <input asp-for="TeacherSubjectName" class="form-control" />
+                        <span asp-validation-for="TeacherSubjectName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="SubjectID">Subject</label>
+                        <select asp-for="SubjectID" class="form-select" asp-items="@(new SelectList(ViewBag.SubjectList, "SubjectID", "SubjectName"))">
+                            <option value="">Select Subject</option>
+                        </select>
+                        <span asp-validation-for="SubjectID" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label asp-for="TeacherID">Teacher</label>
+                        <select asp-for="TeacherID" class="form-select" asp-items="@(new SelectList(ViewBag.TeacherList, "TeacherID", "TeacherName"))">
+                            <option value="">Select Teacher</option>
+                        </select>
+                        <span asp-validation-for="TeacherID" class="text-danger"></span>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success w-100">Submit Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="mb-3">
-        <label asp-for="SubjectID" class="form-label">Subject ID</label>
-        <input asp-for="SubjectID" class="form-control" />
-        <span asp-validation-for="SubjectID" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="TeacherID" class="form-label">Teacher ID</label>
-        <input asp-for="TeacherID" class="form-control" />
-        <span asp-validation-for="TeacherID" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-controller="TeacherSubject" asp-action="TeacherSubjectList" class="btn btn-danger me-2">
-        Cancel
-    </a>
-</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

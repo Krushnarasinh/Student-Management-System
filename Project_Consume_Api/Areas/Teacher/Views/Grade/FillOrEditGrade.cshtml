@@ -1,0 +1,139 @@
+﻿@model List<GradeModel>
+
+@{
+    bool isAdd = Convert.ToBoolean(Context.Request.Query["isAdd"]);
+    int subjectID = Convert.ToInt32(Context.Request.Query["subjectID"]);
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-primary fw-bold mb-0">Fill Grade</h1>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <form id="gradeForm" method="post" asp-controller="Grade" asp-action="FillOrEditGrade" asp-route-isAdd="@isAdd" asp-route-subjectID="@subjectID">
+            <table class="table table-striped table-bordered table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <th class="px-2 py-1 font-weight-bold">Student Name</th>
+                        <th class="px-2 py-1 font-weight-bold">Roll No</th>
+                        <th class="px-2 py-1 font-weight-bold">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count(); i++)
+                    {
+                        <tr>
+                            <input type="hidden" name="[@i].GradeID" value="@Model[i].GradeID" />
+                            <input type="hidden" name="[@i].StudentID" value="@Model[i].StudentID" />
+                            <input type="hidden" name="[@i].ClassID" value="@Model[i].ClassID" />
+                            <input type="hidden" name="[@i].SubjectID" value="@Model[i].SubjectID" />
+                            <input type="hidden" name="[@i].TeacherID" value="@Model[i].TeacherID" />
+
+                            <td>@Model[i].StudentName</td>
+                            <td>@Model[i].RollNo</td>
+                            @*  <td>
+                        <select name="[@i].TeacherID" class="form-control">
+                        @foreach (TeacherDropDownModel teacher in ViewBag.TeacherList as List<TeacherDropDownModel>)
+                        {
+                        <option value="@teacher.TeacherID" >
+                        @teacher.TeacherName
+                        </option>
+                        }
+                        </select>
+                        </td> *@
+                            @*  <td>
+                        <select name="[@i].SubjectID" class="form-control">
+                        @foreach (var subject in ViewBag.SubjectList as List<SubjectDropDownModel>)
+                        {
+                        <option value="@subject.SubjectID">
+                        @subject.SubjectName
+                        </option>
+                        }
+                        </select>
+                        </td> *@
+                            <td>
+                                <input type="number" name="[@i].Score" value="@Model[i].Score" class="form-control" required />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button type="submit" class="btn btn-primary">Save Grades</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("gradeForm").addEventListener("submit", function (event) {
+            let isValid = true;
+
+            document.querySelectorAll("input[name$='Score']").forEach(input => {
+                let score = parseInt(input.value, 10);
+
+                if (isNaN(score) || score < 0 || score > 100) {
+                    isValid = false;
+
+                    Swal.fire({
+                        title: 'Invalid Score!',
+                        text: 'Score must be between 0 and 100.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+
+                    input.focus();
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault(); // Stop form submission
+            }
+        });
+
+        // Success alerts for actions (Insert, Update, Delete)
+        @if (TempData["GradeInsert"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["GradeInsert"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = window.location.href; // Reloads the page
+                });
+            </text>
+        }
+
+        @if (TempData["GradeUpdated"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["GradeUpdated"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = window.location.href;
+                });
+            </text>
+        }
+
+        @if (TempData["GradeDeleted"] != null)
+        {
+            <text>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["GradeDeleted"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = window.location.href;
+                });
+            </text>
+        }
+    </script>
+}
+

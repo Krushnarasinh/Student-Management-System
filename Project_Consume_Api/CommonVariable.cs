@@ -43,6 +43,15 @@
 			return _HttpContextAccessor.HttpContext.Session.GetString("EmailAddress");
 		}
 
+        public static void SetToken(string token)
+        {
+            _HttpContextAccessor.HttpContext.Session.SetString("token", token);
+        }
 
-	}
+        public static string? GetToken()
+        {
+            string? token = _HttpContextAccessor.HttpContext.Session.GetString("token");
+            return token;
+        }
+    }
 }

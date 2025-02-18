@@ -1,0 +1,290 @@
+﻿@model Project_Consume_Api.Areas.Student.Models.StudentDashBoardModel
+
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- Bootstrap 5 CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h2, h3 {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 20px;
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 20px;
+        background-color: #F6648C; /* A different shade to distinguish from Teacher Dashboard */
+        color: white;
+        border-radius: 20px;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .table {
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .table thead {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+
+    hr {
+        border: 1px solid #ddd;
+        margin: 30px 0;
+    }
+</style>
+
+<h2 class="text-center">Student Dashboard</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var count in Model.Counts)
+        {
+            <div class="col-md-3 text-white">
+                <div class="card text-white mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@count.Metric</h5>
+                        <h2 class="text-white" style="color:white">@count.Value</h2>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <hr />
+
+    <h3 class="text-center mt-4">Student Details</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tbody>
+                @foreach (var student in Model.StudentDetails)
+                {
+                    <tr>
+                        <th>Student ID</th>
+                        <td>@student.StudentID</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>@student.StudentName</td>
+                    </tr>
+                    <tr>
+                        <th>Date of Birth</th>
+                        <td>@student.DOB.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                    <tr>
+                        <th>Gender</th>
+                        <td>@student.Gender</td>
+                    </tr>
+                    <tr>
+                        <th>Contact No</th>
+                        <td>@student.ContactInfo</td>
+                    </tr>
+                    <tr>
+                        <th>Roll No</th>
+                        <td>@student.RollNo</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>@student.EmailID</td>
+                    </tr>
+                    <tr>
+                        <th>Password</th>
+                        <td>
+                            @(student.Password.Length > 2 ? student.Password[0] + new string('*', student.Password.Length - 2) + student.Password[^1] : student.Password)
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Class Name</th>
+                        <td>@student.ClassName</td>
+                    </tr>
+                    <tr>
+                        <th>Attendance Percentage</th>
+                        <td>
+                            @{
+                                int totalDays = Model.AttendanceRecords.Count();
+                                int presentDays = Model.AttendanceRecords.Count(a => a.Status == "Present");
+                                int attendancePercentage = totalDays > 0 ? (presentDays * 100) / totalDays : 0;
+                            }
+                            @attendancePercentage%
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <hr />
+
+    <h3 class="text-center">Attendance Records</h3>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>No</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int co = 1;
+            }
+            @foreach (var attendance in Model.AttendanceRecords)
+            {
+                <tr>
+                    <td>@co</td>
+                    <td>@attendance.Status</td>
+                    <td>@attendance.Date</td>
+                </tr>
+                co++;
+            }
+        </tbody>
+    </table>
+
+    <hr />
+
+    <!-- Grade Calculation -->
+    @{
+        int totalSubjects = Model.GradeRecords.Count();
+        int totalScore = Model.GradeRecords.Sum(g => g.Score);
+        double gradePercentage = totalSubjects > 0 ? (double)totalScore / totalSubjects : 0;
+    }
+
+    <h3 class="text-center">Grade Records</h3>
+
+    <!-- Row Layout: Left (Chart) | Right (Table) -->
+    <div class="row align-items-center my-4">
+        <!-- Left: Circular Chart -->
+        <div class="col-md-3 d-flex justify-content-center">
+            <div class="chart-container mb-2">
+                <canvas id="gradeChart" style="height:200px; width:200px;"></canvas>
+                <div class="chart-text" id="chartText">0%</div>
+            </div>
+        </div>
+
+        <!-- Right: Grade Table -->
+        <div class="col-md-9">
+            <table class="table table-bordered bg-white shadow-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>No</th>
+                        <th>Subject Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int c = 1;
+                    }
+                    @foreach (var grade in Model.GradeRecords)
+                    {
+                        <tr>
+                            <td>@c</td>
+                            <td>@grade.SubjectName</td>
+                            <td>@grade.Score</td>
+                        </tr>
+                        c++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Custom CSS for Circular Chart -->
+    <style>
+        .chart-container {
+            position: relative;
+            width: 120px; /* Reduced Size */
+            height: 120px; /* Reduced Size */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white; /* White Background */
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* Light Shadow */
+        }
+
+        .chart-text {
+            position: absolute;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+
+    <!-- Include Chart.js (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- JavaScript for Circular Progress -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctx = document.getElementById("gradeChart").getContext("2d");
+            var gradePercentage = @gradePercentage.ToString("0.00"); // Get percentage from Razor
+            document.getElementById("chartText").innerText = gradePercentage + "%"; // Set text inside chart
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [gradePercentage, 100 - gradePercentage],
+                        backgroundColor: ["#F6648C", "#e9ecef"],
+                        borderWidth: 3,
+                        hoverOffset: 5
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    cutout: "70%",
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
+
+</div>
